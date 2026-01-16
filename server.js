@@ -25,6 +25,8 @@ const ALLOWED_DOMAINS = [
   "jsonplaceholder.typicode.com",
   "www.google.com",
   "google.com"
+  "www.crazygames.com",
+  "crazygames.com"
 ];
 
 app.get("/proxy", async (req, res) => {
