@@ -1,3 +1,5 @@
+// server.js
+
 const express = require("express");
 const rateLimit = require("express-rate-limit");
 const cors = require("cors");
@@ -9,13 +11,13 @@ const fetch = (...args) =>
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Middleware
 app.use(cors());
 app.use(express.static("."));
-
 app.use(
   rateLimit({
-    windowMs: 60 * 1000,
-    max: 20,
+    windowMs: 60 * 1000, // 1 minute
+    max: 20, // max 20 requests per minute
   })
 );
 
@@ -24,6 +26,9 @@ const SAFE_DOMAINS = [
   "example.com",
   "jsonplaceholder.typicode.com",
   "crazygames.com",
+  "www.crazygames.com",
+  "m.crazygames.com",
+  "embed.crazygames.com"
 ];
 
 // Function to allow subdomains
@@ -33,6 +38,7 @@ function isAllowed(hostname) {
   );
 }
 
+// Proxy endpoint
 app.get("/proxy", async (req, res) => {
   const targetUrl = req.query.url;
 
@@ -44,30 +50,4 @@ app.get("/proxy", async (req, res) => {
   try {
     parsedUrl = new URL(targetUrl);
   } catch {
-    return res.status(400).send("Invalid URL");
-  }
-
-  if (!isAllowed(parsedUrl.hostname)) {
-    return res.status(403).send("Domain not allowed");
-  }
-
-  try {
-    const response = await fetch(targetUrl, {
-      redirect: "follow",
-      headers: {
-        "User-Agent":
-          "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/120 Safari/537.36",
-      },
-    });
-
-    const body = await response.text();
-    res.send(body);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Fetch failed");
-  }
-});
-
-app.listen(PORT, () => {
-  console.log(`Proxy running at http://localhost:${PORT}`);
-});
+    return r
