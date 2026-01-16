@@ -1,0 +1,19 @@
+{
+  "name": "siddiqui684",
+  "version": "1.0.0",
+  "description": "School project HTTP proxy",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.2.1",
+    "node-fetch": "^3.3.2"
+  }
+}
