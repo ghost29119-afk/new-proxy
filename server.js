@@ -24,7 +24,7 @@ const ALLOWED_DOMAINS = [
   "example.com",
   "jsonplaceholder.typicode.com",
   "www.google.com",
-  "google.com"
+  "google.com",
   "www.crazygames.com",
   "crazygames.com"
 ];
