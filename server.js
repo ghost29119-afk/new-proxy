@@ -2,7 +2,7 @@ const express = require("express");
 const rateLimit = require("express-rate-limit");
 const cors = require("cors");
 
-// IMPORTANT: node-fetch v2 syntax (works on Chromebook)
+// Node-fetch v2 syntax (works on Chromebook)
 const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
@@ -20,14 +20,18 @@ app.use(
 );
 
 // ✅ Domains we allow
-const ALLOWED_DOMAINS = [
+const SAFE_DOMAINS = [
   "example.com",
   "jsonplaceholder.typicode.com",
-  "www.google.com",
-  "google.com",
-  "www.crazygames.com",
-  "crazygames.com"
+  "crazygames.com",
 ];
+
+// Function to allow subdomains
+function isAllowed(hostname) {
+  return SAFE_DOMAINS.some(
+    (domain) => hostname === domain || hostname.endsWith(`.${domain}`)
+  );
+}
 
 app.get("/proxy", async (req, res) => {
   const targetUrl = req.query.url;
@@ -43,7 +47,7 @@ app.get("/proxy", async (req, res) => {
     return res.status(400).send("Invalid URL");
   }
 
-  if (!ALLOWED_DOMAINS.includes(parsedUrl.hostname)) {
+  if (!isAllowed(parsedUrl.hostname)) {
     return res.status(403).send("Domain not allowed");
   }
 
@@ -53,13 +57,13 @@ app.get("/proxy", async (req, res) => {
       headers: {
         "User-Agent":
           "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/120 Safari/537.36",
-        "Accept-Language": "en-US,en;q=0.9"
-      }
+      },
     });
 
     const body = await response.text();
     res.send(body);
   } catch (err) {
+    console.error(err);
     res.status(500).send("Fetch failed");
   }
 });
